@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://egitim.worldcuptimer.com/api
+    container_name: education-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://egitim.worldcuptimer.com/api
+    networks:
+      - education-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: education-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=education_platform
+      - PORT=5000
+      - JWT_SECRET=mySecretKey123
+    depends_on:
+      - mysql
+    networks:
+      - education-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: education-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=education_platform
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - education-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: education-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    depends_on:
+      - mysql
+    networks:
+      - education-network
+
+networks:
+  education-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
