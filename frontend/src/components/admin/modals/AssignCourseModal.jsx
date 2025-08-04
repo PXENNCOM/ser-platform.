@@ -57,7 +57,7 @@ const AssignCourseModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-xl w-full max-w-2xl h-[90vh] flex flex-col overflow-hidden">
         {/* Header - Sabit */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0">
           <h3 className="text-xl font-semibold text-gray-900">Kurs Atama</h3>
@@ -70,8 +70,8 @@ const AssignCourseModal = ({
         </div>
         
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="p-6 space-y-6 pb-8">
             {/* Student Selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
