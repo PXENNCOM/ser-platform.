@@ -5,7 +5,8 @@ const db = require('../config/database');
 const getMyCourses = async (req, res) => {
   try {
     const [courses] = await db.execute(`
-      SELECT c.*, u.first_name as instructor_first_name, u.last_name as instructor_last_name,
+      SELECT c.id, c.title, c.description, c.created_at, c.updated_at, c.created_by,
+             u.first_name as instructor_first_name, u.last_name as instructor_last_name,
              uc.assigned_at,
              COUNT(cv.id) as video_count
       FROM user_courses uc
@@ -13,7 +14,8 @@ const getMyCourses = async (req, res) => {
       LEFT JOIN users u ON c.created_by = u.id
       LEFT JOIN course_videos cv ON c.id = cv.course_id
       WHERE uc.user_id = ?
-      GROUP BY c.id
+      GROUP BY c.id, c.title, c.description, c.created_at, c.updated_at, c.created_by,
+               u.first_name, u.last_name, uc.assigned_at
       ORDER BY uc.assigned_at DESC
     `, [req.user.id]);
 
@@ -21,7 +23,7 @@ const getMyCourses = async (req, res) => {
       success: true,
       data: { courses }
     });
-
+   
   } catch (error) {
     console.error('Get my courses error:', error);
     res.status(500).json({
@@ -78,7 +80,7 @@ const getMyCourseDetail = async (req, res) => {
         videos 
       }
     });
-
+   
   } catch (error) {
     console.error('Get my course detail error:', error);
     res.status(500).json({
